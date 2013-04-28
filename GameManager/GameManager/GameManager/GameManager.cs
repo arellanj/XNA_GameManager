@@ -20,9 +20,6 @@ namespace XNA_GameManager
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Viewport defaultViewport;
-        Viewport gameViewport;
-        Viewport menuViewport;
 
         enum ManagerState { MENU, GAME }
         ManagerState State = ManagerState.MENU;
@@ -53,23 +50,16 @@ namespace XNA_GameManager
 
             IsMouseVisible = true;
 
-            defaultViewport = GraphicsDevice.Viewport;
-            menuViewport = defaultViewport;
-            gameViewport = defaultViewport;
-
-            gameViewport.Width = gameViewport.Width / 2;
-            menuViewport.Width = menuViewport.Width / 2;
-            gameViewport.X = menuViewport.Width;
-
+            Rectangle window = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
 
             games = new List<GameBase>();
             loadedGame = -1;
 
-            Game1 game1 = new Game1(Content, new Rectangle(gameViewport.X, gameViewport.Y, gameViewport.Width, gameViewport.Height));
+            Game1 game1 = new Game1(Content, window );
             games.Add((GameBase)game1);
 
-            Game2 game2 = new Game2(Content, new Rectangle(gameViewport.X,gameViewport.Y, gameViewport.Width, gameViewport.Height));
+            Game2 game2 = new Game2(Content, window );
             games.Add((GameBase)game2);
 
 
@@ -147,21 +137,7 @@ namespace XNA_GameManager
                     break;
                 case ManagerState.GAME:
                     
-                    KeyboardState keyboard = Keyboard.GetState();
-                    if (keyboard.IsKeyDown(Keys.Escape))
-                    {
-                        games[loadedGame].Unload();
-
-                        IsMouseVisible = true;
-                        State = ManagerState.MENU;
-                        loadedGame = -1;
-                    }
-
-                    
-                    mouse = Mouse.GetState();
-                    endgame.Update(mouse);
-
-                    if (endgame.risingEdge)
+                    if(games[loadedGame].Terminated)
                     {
                         games[loadedGame].Unload();
 
@@ -198,7 +174,6 @@ namespace XNA_GameManager
            
             GraphicsDevice.Clear(Color.White);
 
-            GraphicsDevice.Viewport = defaultViewport;
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
 
@@ -206,19 +181,14 @@ namespace XNA_GameManager
             {
                 case ManagerState.MENU:
 
-                    GraphicsDevice.Viewport = menuViewport;
                     button1.Draw(spriteBatch);
                     button2.Draw(spriteBatch);
                     Quit.Draw(spriteBatch);
                     break;
                 case ManagerState.GAME:
-
-                    GraphicsDevice.Viewport = gameViewport;
                     games[loadedGame].Draw(spriteBatch);
 
-                    
-                    GraphicsDevice.Viewport = menuViewport;
-                    endgame.Draw(spriteBatch);
+                 
 
             
                     break;

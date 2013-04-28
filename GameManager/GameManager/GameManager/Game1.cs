@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Input;
 
 namespace XNA_GameManager
 {
@@ -26,6 +27,7 @@ namespace XNA_GameManager
             pos = new Vector2(100, 100);
             Random r = new Random(1);
             D = new Vector2(r.Next(2, 3), r.Next(1, 3));
+            base.Initialize();
         }
 
         public override void Update(GameTime gameTime)
@@ -52,6 +54,8 @@ namespace XNA_GameManager
                 D.Y = -D.Y;
                 pos.Y = window.Height - ball.Height;
             }
+            KeyboardState keyboard = Keyboard.GetState();
+            if (keyboard.IsKeyDown(Keys.Escape)) this.Exit();
             base.Update(gameTime);
         }
 

@@ -24,11 +24,17 @@ namespace XNA_GameManager
         public override void Initialize()
         {
             cursor = Content.Load<Texture2D>("mouse");
+            base.Initialize();
         }
         public override void Update(GameTime gameTime)
         {
             MouseState mouse = Mouse.GetState();
             pos = new Vector2(mouse.X, mouse.Y);
+
+
+            KeyboardState keyboard = Keyboard.GetState();
+            if (keyboard.IsKeyDown(Keys.Space)) this.Exit();
+
             base.Update(gameTime);
         }
         public override void Draw(SpriteBatch SB)

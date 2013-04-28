@@ -18,15 +18,26 @@ namespace XNA_GameManager
         public Kinect kinect;
         public ContentManager Content;
         public Rectangle window;
+        public bool Terminated;
 
-        public GameBase( ContentManager content, Rectangle window ) {
+        protected void Exit()
+        {
+            Terminated = true;
+        }
+
+        public GameBase(ContentManager content, Rectangle window)
+        {
+            Terminated = false;
             this.window = window;
             Content = new ContentManager(content.ServiceProvider);
             kinect = new Kinect();
             kinect.initialize();
         }
 
-        public virtual void Initialize() { }
+        public virtual void Initialize()
+        {
+            Terminated = false;
+        }
 
         public virtual void Update(GameTime gameTime) { }
 
