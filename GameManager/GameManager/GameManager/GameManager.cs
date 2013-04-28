@@ -34,7 +34,7 @@ namespace XNA_GameManager
         public GameManager()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = false;
+            graphics.IsFullScreen = true;
             Content.RootDirectory = "Content/Manager";
         }
 
@@ -59,8 +59,11 @@ namespace XNA_GameManager
             Game1 game1 = new Game1(Content, window );
             games.Add((GameBase)game1);
 
-            Game2 game2 = new Game2(Content, window );
-            games.Add((GameBase)game2);
+            //Game2 game2 = new Game2(Content, window);
+            //games.Add((GameBase)game2);
+
+            Tetris tetris = new Tetris(Content, window);
+            games.Add((GameBase)tetris);
 
 
             buttonFont = Content.Load<SpriteFont>("buttonText");
@@ -68,7 +71,7 @@ namespace XNA_GameManager
 
             //games.Add(new Game1(Content));
             button1 = new Button(GraphicsDevice, new Rectangle(100, 10, 300, 100), Color.DarkGreen, Color.Green, buttonFont, "GAME 1");
-            button2 = new Button(GraphicsDevice, new Rectangle(100, 120, 300, 100), Color.Blue, Color.SkyBlue, buttonFont, "GAME 2");
+            button2 = new Button(GraphicsDevice, new Rectangle(100, 120, 300, 100), Color.Blue, Color.SkyBlue, buttonFont, "Tetris");
             Quit = new Button(GraphicsDevice, new Rectangle(100, 230, 300, 100), Color.Crimson, Color.OrangeRed, buttonFont, "QUIT");
             endgame = new Button(GraphicsDevice, new Rectangle(100, 10, 300, 100), Color.Crimson, Color.OrangeRed, buttonFont, "ENDGAME");
 
@@ -114,14 +117,14 @@ namespace XNA_GameManager
                     button1.Update(mouse);
                     button2.Update(mouse);
                     Quit.Update(mouse);
-                    if (button1.risingEdge)
+                    if (button1.fallingEdge)
                     {
                         State = ManagerState.GAME;
 
                         loadedGame = 0;
                         games[loadedGame].Initialize();
                     }
-                    else if (button2.risingEdge)
+                    else if (button2.fallingEdge)
                     {
 
                         IsMouseVisible = false; ;
@@ -129,7 +132,7 @@ namespace XNA_GameManager
                         loadedGame = 1;
                         games[loadedGame].Initialize();
                     }
-                    else if (Quit.risingEdge)
+                    else if (Quit.fallingEdge)
                     {
                         this.Exit();
                     }

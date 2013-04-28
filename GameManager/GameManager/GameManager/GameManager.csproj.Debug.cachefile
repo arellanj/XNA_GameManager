@@ -1,3 +1,16 @@
 Content\Game1\ball.xnb
 Content\Game2\mouse.xnb
 Content\Manager\ButtonText.xnb
+Content\Tetris\Backgrounds\Back.xnb
+Content\Tetris\Backgrounds\GameArea.xnb
+Content\Tetris\bounds.xnb
+Content\Tetris\hand.xnb
+Content\Tetris\warnborder.xnb
+Content\Tetris\Shape Textures\Bar.xnb
+Content\Tetris\Shape Textures\Box.xnb
+Content\Tetris\Shape Textures\J.xnb
+Content\Tetris\Shape Textures\L.xnb
+Content\Tetris\Shape Textures\S.xnb
+Content\Tetris\Shape Textures\T.xnb
+Content\Tetris\Shape Textures\Z.xnb
+Content\Tetris\scoreFont.xnb
