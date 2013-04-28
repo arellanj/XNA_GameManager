@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameManager", "GameManager\GameManager\GameManager.csproj", "{9F864137-D139-4056-ACEB-4939DE63AB7A}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "GameManagerContent", "GameManager\GameManagerContent\GameManagerContent.contentproj", "{E2E14D21-EDF9-4093-8F3F-427E1E8AE2A2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F864137-D139-4056-ACEB-4939DE63AB7A}.Debug|x86.ActiveCfg = Debug|x86
+		{9F864137-D139-4056-ACEB-4939DE63AB7A}.Debug|x86.Build.0 = Debug|x86
+		{9F864137-D139-4056-ACEB-4939DE63AB7A}.Release|x86.ActiveCfg = Release|x86
+		{9F864137-D139-4056-ACEB-4939DE63AB7A}.Release|x86.Build.0 = Release|x86
+		{E2E14D21-EDF9-4093-8F3F-427E1E8AE2A2}.Debug|x86.ActiveCfg = Debug|x86
+		{E2E14D21-EDF9-4093-8F3F-427E1E8AE2A2}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
