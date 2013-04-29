@@ -16,7 +16,7 @@ namespace KinectTracking
     class Kinect
     {
         // kinect variables
-        KinectSensor kinectSensor;
+        KinectSensor kinectSensor = null;
 
         public Skeleton player;
 
@@ -38,6 +38,17 @@ namespace KinectTracking
             if(enabled)
             kinectSensor.Stop();
         }
+
+        public void pause()
+        {
+            kinectSensor.Stop();
+        }
+        
+        public void start()
+        {
+            kinectSensor.Start();
+        }
+        
         public void initialize( int elevationAngle = 0 )
         {
 

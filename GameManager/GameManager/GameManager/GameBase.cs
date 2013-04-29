@@ -30,12 +30,13 @@ namespace XNA_GameManager
             Terminated = false;
             this.window = window;
             Content = new ContentManager(content.ServiceProvider);
-            kinect = new Kinect();
-            kinect.initialize();
         }
 
         public virtual void Initialize()
         {
+
+            kinect = new Kinect();
+            kinect.initialize();
             Terminated = false;
         }
 
@@ -43,6 +44,8 @@ namespace XNA_GameManager
 
         public virtual void Draw(SpriteBatch SB) { }
         
-        public  virtual void Unload() { }
+        public  virtual void Unload() {
+
+        }
     }
 }

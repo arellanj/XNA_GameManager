@@ -194,14 +194,15 @@ namespace XNA_GameManager
         bool[] getGestures(GameTime gameTime)
         {
             //initialize  the return
-            Console.WriteLine("( {0} )", v_rwrist.Y);
-            Console.WriteLine(" Max = {0}, Min = {1}", vmax, vmin);
+            //Console.WriteLine("( {0} )", v_rwrist.Y);
+            //Console.WriteLine(" Max = {0}, Min = {1}", vmax, vmin);
             vmax = Math.Max(vmax, v_rwrist.Y);
             vmin = Math.Min(vmin, v_rwrist.Y);
 
             bool[] gestures = new bool[numGestures];
             for (int i = 0; i < numGestures; i++)
                 gestures[i] = false;
+
             // if there is no player present do not check the data
             if (kinect.player == null) return gestures;
             

@@ -9,6 +9,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+using KinectTracking;
+using Microsoft.Kinect;
+
 
 namespace XNA_GameManager
 {
@@ -24,6 +27,11 @@ namespace XNA_GameManager
         enum ManagerState { MENU, GAME }
         ManagerState State = ManagerState.MENU;
 
+        // temporary
+        Kinect kinect;
+        Texture2D dot;
+        //????
+
 
         List<GameBase> games;
         Button button1, button2, Quit, endgame;
@@ -34,7 +42,9 @@ namespace XNA_GameManager
         public GameManager()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = true;
+            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            graphics.IsFullScreen = false;
             Content.RootDirectory = "Content/Manager";
         }
 
@@ -75,6 +85,9 @@ namespace XNA_GameManager
             Quit = new Button(GraphicsDevice, new Rectangle(100, 230, 300, 100), Color.Crimson, Color.OrangeRed, buttonFont, "QUIT");
             endgame = new Button(GraphicsDevice, new Rectangle(100, 10, 300, 100), Color.Crimson, Color.OrangeRed, buttonFont, "ENDGAME");
 
+            kinect = new Kinect();
+            kinect.initialize();
+
             base.Initialize();
         }
 
@@ -86,6 +99,8 @@ namespace XNA_GameManager
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            dot = Content.Load<Texture2D>("dot");
 
             // TODO: use this.Content to load your game content here
         }
@@ -143,7 +158,7 @@ namespace XNA_GameManager
                     if(games[loadedGame].Terminated)
                     {
                         games[loadedGame].Unload();
-
+                        //kinect.start();
                         IsMouseVisible = true;
                         State = ManagerState.MENU;
                         loadedGame = -1;
@@ -159,6 +174,7 @@ namespace XNA_GameManager
                 case ManagerState.MENU:
                     break;
                 case ManagerState.GAME:
+                    //kinect.pause();
                     games[loadedGame].Update(gameTime);
                     break;
                 default:
@@ -176,10 +192,7 @@ namespace XNA_GameManager
         {
            
             GraphicsDevice.Clear(Color.White);
-
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-
+            
             switch (State) // State Actions
             {
                 case ManagerState.MENU:
@@ -187,6 +200,17 @@ namespace XNA_GameManager
                     button1.Draw(spriteBatch);
                     button2.Draw(spriteBatch);
                     Quit.Draw(spriteBatch);
+
+                    spriteBatch.Begin();
+                    if (kinect.player != null)
+                    {
+                        foreach (Joint j in kinect.player.Joints)
+                        {
+                            Vector2 position = new Vector2((((0.5f * j.Position.X) + 0.5f) * (graphics.PreferredBackBufferWidth)), (((-0.5f * j.Position.Y) + 0.5f) * (graphics.PreferredBackBufferWidth)));
+                            spriteBatch.Draw(dot, position , Color.White);
+                        }
+                    }
+                    spriteBatch.End();
                     break;
                 case ManagerState.GAME:
                     games[loadedGame].Draw(spriteBatch);
