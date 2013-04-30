@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 
 using KinectTracking;
 using Microsoft.Kinect;
+using System.Windows.Forms;
 
 
 namespace XNA_GameManager
@@ -41,6 +42,12 @@ namespace XNA_GameManager
 
         public GameManager()
         {
+
+
+
+            Form MyGameForm = (Form)Form.FromHandle(Window.Handle);
+            MyGameForm.FormBorderStyle = FormBorderStyle.None;
+
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
@@ -121,9 +128,7 @@ namespace XNA_GameManager
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
+           
 
             // TODO: Add your update logic here
             switch(State){ // Transition
@@ -202,13 +207,18 @@ namespace XNA_GameManager
                     Quit.Draw(spriteBatch);
 
                     spriteBatch.Begin();
-                    if (kinect.player != null)
+                    if (kinect.player != null && kinect.player.TrackingState == SkeletonTrackingState.Tracked)
                     {
-                        foreach (Joint j in kinect.player.Joints)
-                        {
-                            Vector2 position = new Vector2((((0.5f * j.Position.X) + 0.5f) * (graphics.PreferredBackBufferWidth)), (((-0.5f * j.Position.Y) + 0.5f) * (graphics.PreferredBackBufferWidth)));
-                            spriteBatch.Draw(dot, position , Color.White);
-                        }
+                        Joint rightHand = kinect.player.Joints[JointType.HandRight];
+                        rightHand = ScaleTo(rightHand, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+                        spriteBatch.Draw(dot, new Rectangle((int)rightHand.Position.X, (int)rightHand.Position.Y,
+                                graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+
+                        //foreach (Joint j in kinect.player.Joints)
+                        //{
+                         //   Vector2 position = new Vector2((((0.5f * j.Position.X) + 0.5f) * (graphics.PreferredBackBufferWidth)), (((-0.5f * j.Position.Y) + 0.5f) * (graphics.PreferredBackBufferWidth)));
+                          //  spriteBatch.Draw(dot, position , Color.White);
+                        //}
                     }
                     spriteBatch.End();
                     break;
@@ -227,5 +237,43 @@ namespace XNA_GameManager
 
             base.Draw(gameTime);
         }
+        /// <summary>
+        /// coding for fun common extension for joints
+        /// </summary>
+        /// <param name="joint"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="skeletonMaxX"></param>
+        /// <param name="skeletonMaxY"></param>
+        /// <returns></returns>
+        public Joint ScaleTo(Joint joint, int width, int height)
+        {
+            Microsoft.Kinect.SkeletonPoint pos = new SkeletonPoint()
+            {
+                X = Scale(width, 1.0f, joint.Position.X),
+                Y = Scale(height, 1.0f, -joint.Position.Y),
+                Z = joint.Position.Z
+            };
+
+            joint.Position = pos;
+
+            return joint;
+        }
+
+
+        private float Scale(int maxPixel, float maxSkeleton, float position)
+        {
+            float value = ((((maxPixel / maxSkeleton) / 2) * position) + (maxPixel / 2));
+            if (value > maxPixel)
+                return maxPixel;
+            if (value < 0)
+                return 0;
+            return value;
+        }
+
     }
+
+
+
+    
 }
