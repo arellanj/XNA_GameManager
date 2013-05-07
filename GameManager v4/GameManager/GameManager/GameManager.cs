@@ -8,9 +8,10 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-
+using Coding4Fun.Kinect.KinectService.Common;
+using Coding4Fun.Kinect.KinectService.WpfClient;
 using KinectTracking;
-using Microsoft.Kinect;
+//using Microsoft.Kinect;
 
 
 namespace XNA_GameManager
@@ -24,6 +25,9 @@ namespace XNA_GameManager
         SpriteBatch spriteBatch;
 
 
+        SkeletonClient skeletonClient;
+        Skeleton player =null;
+
         enum ManagerState { MENU, GAME }
         ManagerState State = ManagerState.MENU;
 
@@ -31,7 +35,6 @@ namespace XNA_GameManager
         List<string> gamelist;
 
         // temporary
-        Kinect kinect;
         Texture2D dot;
         //????
 
@@ -40,6 +43,7 @@ namespace XNA_GameManager
   
         
         SpriteFont buttonFont;
+        int socket = 4530;
 
         public GameManager()
         {
@@ -50,6 +54,11 @@ namespace XNA_GameManager
             Content.RootDirectory = "Content/Manager";
             gamelist = new List<string>();
             loadedGame = -1;
+            
+
+            skeletonClient = new SkeletonClient();
+            skeletonClient.SkeletonFrameReady += client_SkeletonFrameReady;
+            skeletonClient.Connect("127.0.0.1", socket);
         }
 
 
@@ -66,23 +75,21 @@ namespace XNA_GameManager
 
             Rectangle window = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
-            gamelist.Add("C:/Users/Jonatan/Documents/Visual Studio 2010/Projects/WindowsGame2/WindowsGame2/WindowsGame2/bin/x86/Debug/WindowsGame2.exe");
-            gamelist.Add("C:/Users/Jonatan/Documents/Visual Studio 2010/Projects/KinectGame/KinectGame/KinectGame/bin/x86/Debug/KinectGame.exe");
-
+            //gamelist.Add("C:/Users/Jonatan/Documents/Visual Studio 2010/Projects/WindowsGame2/WindowsGame2/WindowsGame2/bin/x86/Debug/WindowsGame2.exe");
+            //gamelist.Add("C:/Users/Jonatan/Documents/Visual Studio 2010/Projects/KinectGame/KinectGame/KinectGame/bin/x86/Debug/KinectGame.exe");
+            gamelist.Add("notepad.exe");
+            gamelist.Add("notepad.exe");
 
 
             buttonFont = Content.Load<SpriteFont>("buttonText");
 
 
             //games.Add(new Game1(Content));
-            button1 = new Button(GraphicsDevice, new Rectangle(100, 10, 300, 100), Color.DarkGreen, Color.Green, buttonFont, "GAME 1");
-            button2 = new Button(GraphicsDevice, new Rectangle(100, 120, 300, 100), Color.Blue, Color.SkyBlue, buttonFont, "Tetris");
+            button1 = new Button(GraphicsDevice, new Rectangle(100, 10, 300, 100), Color.DarkGreen, Color.Green, buttonFont, "NOTEPAD");
+            button2 = new Button(GraphicsDevice, new Rectangle(100, 120, 300, 100), Color.Blue, Color.SkyBlue, buttonFont, "NOTEPAD");
             Quit = new Button(GraphicsDevice, new Rectangle(100, 230, 300, 100), Color.Crimson, Color.OrangeRed, buttonFont, "QUIT");
             endgame = new Button(GraphicsDevice, new Rectangle(100, 10, 300, 100), Color.Crimson, Color.OrangeRed, buttonFont, "ENDGAME");
-
-            kinect = new Kinect();
-            kinect.initialize();
-
+            
             base.Initialize();
         }
 
@@ -130,7 +137,7 @@ namespace XNA_GameManager
                     Quit.Update(mouse);
                     if (button1.fallingEdge)
                     {
-                        State = ManagerState.GAME;
+                        //State = ManagerState.GAME;
 
                         loadedGame = 0;
                         loadGame(gamelist[loadedGame]);
@@ -138,8 +145,8 @@ namespace XNA_GameManager
                     else if (button2.fallingEdge)
                     {
 
-                        IsMouseVisible = false; ;
-                        State = ManagerState.GAME;
+                        //IsMouseVisible = false; ;
+                       // State = ManagerState.GAME;
                         loadedGame = 1;
                         loadGame(gamelist[loadedGame]);
                     }
@@ -189,9 +196,9 @@ namespace XNA_GameManager
                     Quit.Draw(spriteBatch);
 
                     spriteBatch.Begin();
-                    if (kinect.player != null)
+                    if (player != null)
                     {
-                        foreach (Joint j in kinect.player.Joints)
+                        foreach (Joint j in player.Joints)
                         {
                             Vector2 position = new Vector2((((0.5f * j.Position.X) + 0.5f) * (graphics.PreferredBackBufferWidth)), (((-0.5f * j.Position.Y) + 0.5f) * (graphics.PreferredBackBufferWidth)));
                             spriteBatch.Draw(dot, position , Color.White);
@@ -209,9 +216,47 @@ namespace XNA_GameManager
             base.Draw(gameTime);
         }
 
-        public void loadGame(string str)
+        private void loadGame(string command)
         {
+            execute(command);
+        }
 
+        private void execute(string command, string args = "")
+        {
+            try {
+                System.Diagnostics.ProcessStartInfo procStartInfo =
+                    new System.Diagnostics.ProcessStartInfo("cmd", "/c " + command);
+        
+                // The following commands are needed to redirect the standard output.
+                // This means that it will be redirected to the Process.StandardOutput StreamReader.
+                procStartInfo.RedirectStandardOutput = true;
+                procStartInfo.UseShellExecute = false;
+                // Do not create the black window.
+                procStartInfo.CreateNoWindow = true;
+                // Now we create a process, assign its ProcessStartInfo and start it
+                System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                proc.StartInfo = procStartInfo;
+                proc.Start();
+                // Get the output into a string
+                string result = proc.StandardOutput.ReadToEnd();
+                // Display the command output.
+                Console.WriteLine(result);
+            }
+            catch (Exception objException)
+            {
+                // Log the exception
+            }
+        }
+        
+        void client_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
+        {
+            Skeleton skeleton = (from s in e.SkeletonFrame.Skeletons
+                                 where s.TrackingState == SkeletonTrackingState.Tracked
+                                 select s).FirstOrDefault();
+
+            if (skeleton == null)
+                return;
+            player = skeleton;
         }
     }
 }
