@@ -35,6 +35,9 @@ namespace KinectSkeletonService
 
             SkeletonListener skeletonListener = new SkeletonListener(kinect, socket);
             skeletonListener.Start();
+            while (true)
+            {
+            }
         }
 
         
