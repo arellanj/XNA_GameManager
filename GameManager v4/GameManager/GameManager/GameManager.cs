@@ -27,15 +27,17 @@ namespace XNA_GameManager
         enum ManagerState { MENU, GAME }
         ManagerState State = ManagerState.MENU;
 
+        int loadedGame;
+        List<string> gamelist;
+
         // temporary
         Kinect kinect;
         Texture2D dot;
         //????
 
 
-        List<GameBase> games;
         Button button1, button2, Quit, endgame;
-        int loadedGame;
+  
         
         SpriteFont buttonFont;
 
@@ -46,6 +48,8 @@ namespace XNA_GameManager
             graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             graphics.IsFullScreen = false;
             Content.RootDirectory = "Content/Manager";
+            gamelist = new List<string>();
+            loadedGame = -1;
         }
 
 
@@ -62,18 +66,9 @@ namespace XNA_GameManager
 
             Rectangle window = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
+            gamelist.Add("C:/Users/Jonatan/Documents/Visual Studio 2010/Projects/WindowsGame2/WindowsGame2/WindowsGame2/bin/x86/Debug/WindowsGame2.exe");
+            gamelist.Add("C:/Users/Jonatan/Documents/Visual Studio 2010/Projects/KinectGame/KinectGame/KinectGame/bin/x86/Debug/KinectGame.exe");
 
-            games = new List<GameBase>();
-            loadedGame = -1;
-
-            Game1 game1 = new Game1(Content, window );
-            games.Add((GameBase)game1);
-
-            //Game2 game2 = new Game2(Content, window);
-            //games.Add((GameBase)game2);
-
-            Tetris tetris = new Tetris(Content, window);
-            games.Add((GameBase)tetris);
 
 
             buttonFont = Content.Load<SpriteFont>("buttonText");
@@ -126,7 +121,8 @@ namespace XNA_GameManager
                 this.Exit();
 
             // TODO: Add your update logic here
-            switch(State){ // Transition
+            switch (State)
+            { // Transition
                 case ManagerState.MENU:
                     MouseState mouse = Mouse.GetState();
                     button1.Update(mouse);
@@ -137,7 +133,7 @@ namespace XNA_GameManager
                         State = ManagerState.GAME;
 
                         loadedGame = 0;
-                        games[loadedGame].Initialize();
+                        loadGame(gamelist[loadedGame]);
                     }
                     else if (button2.fallingEdge)
                     {
@@ -145,7 +141,7 @@ namespace XNA_GameManager
                         IsMouseVisible = false; ;
                         State = ManagerState.GAME;
                         loadedGame = 1;
-                        games[loadedGame].Initialize();
+                        loadGame(gamelist[loadedGame]);
                     }
                     else if (Quit.fallingEdge)
                     {
@@ -154,15 +150,6 @@ namespace XNA_GameManager
 
                     break;
                 case ManagerState.GAME:
-                    
-                    if(games[loadedGame].Terminated)
-                    {
-                        games[loadedGame].Unload();
-                        //kinect.start();
-                        IsMouseVisible = true;
-                        State = ManagerState.MENU;
-                        loadedGame = -1;
-                    }
 
                     break;
                 default:
@@ -175,15 +162,15 @@ namespace XNA_GameManager
                     break;
                 case ManagerState.GAME:
                     //kinect.pause();
-                    games[loadedGame].Update(gameTime);
                     break;
                 default:
                     break;
 
             }
+
             base.Update(gameTime);
         }
-
+       
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -212,13 +199,7 @@ namespace XNA_GameManager
                     }
                     spriteBatch.End();
                     break;
-                case ManagerState.GAME:
-                    games[loadedGame].Draw(spriteBatch);
-
                  
-
-            
-                    break;
                 default:
                     break;
 
@@ -226,6 +207,11 @@ namespace XNA_GameManager
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
+        }
+
+        public void loadGame(string str)
+        {
+
         }
     }
 }

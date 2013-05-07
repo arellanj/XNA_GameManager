@@ -480,7 +480,7 @@ namespace XNA_GameManager
         }
         private void check_level()
         {
-            if (lines > level * 5)
+            if (lines > level * 1)
             {
                 level++;
                 stepTime *= 0.9f;

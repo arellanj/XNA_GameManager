@@ -221,6 +221,11 @@ namespace XNA_GameManager
 
                 if (j.JointType == JointType.ShoulderLeft)
                     p_lshoulder = new Vector3(j.Position.X, j.Position.Y, j.Position.Z);
+                if (gesture_timer >= 0)
+                {
+                    //gesture_timer -= gameTime.ElapsedGameTime.Milliseconds;
+                    continue;
+                }
 
                 if (j.JointType == JointType.WristRight)
                 {

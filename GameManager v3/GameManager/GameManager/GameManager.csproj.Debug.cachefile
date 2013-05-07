@@ -15,3 +15,7 @@ Content\Tetris\Shape Textures\T.xnb
 Content\Tetris\Shape Textures\Z.xnb
 Content\Tetris\scoreFont.xnb
 Content\Manager\dot.xnb
+Content\Space\asteroid.xnb
+Content\Space\playerbullet.xnb
+Content\Space\ship.xnb
+Content\Space\space.xnb
